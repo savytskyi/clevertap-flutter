@@ -70,8 +70,16 @@ public class CleverTapPlugin implements ActivityAware, FlutterPlugin {
     public void onDetachedFromActivity() {
         Log.d(TAG, "onDetachedFromActivity");
         mainHandler.removeCallbacks(resetBufferRunnable);
-        activity.clear();
-        activity = null;
+        try {
+            if (activity != null) {
+                activity.clear();
+                activity = null;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in onDetachedFromActivity while clearing activity reference", e);
+            // Ensure activity is nulled even if clear() fails
+            activity = null;
+        }
     }
 
     @SuppressWarnings("ConstantConditions")
